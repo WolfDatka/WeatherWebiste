@@ -17,7 +17,13 @@
     <main>
         <div id="mapContainer">
             <div id="map"></div>
-            <button id="mapPositionSelector" type="button" value="Select location" onclick="SelectLocation()">Select location</button>
+
+            <div id="locationSearchContainer">
+                <input type="text" placeholder="Place name" id="locationInput">
+                <button type="button" onclick="SearchForLocation(GetLocationInput())">Search</button>
+            </div>
+
+            <button id="mapPositionSelector" type="button" onclick="SelectLocation()">Select location</button>
         </div>
     </main>
 

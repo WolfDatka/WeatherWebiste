@@ -9,3 +9,21 @@
     left: 1vw;
     bottom: 1.9vh;
 }
+
+#locationSearchContainer button {
+    z-index: 999;
+    position: absolute;
+    right: 1vw;
+    top: 1.7vh;
+}
+
+#locationSearchContainer #locationInput {
+    z-index: 999;
+    position: absolute;
+    right: 5vw;
+    top: 1.7vh;
+}
+
+.leaflet-popup-content {
+    text-align: center;
+}

@@ -1,14 +1,52 @@
 var map;
-var marker;
+var userMarker;
+var resultmarkers = [];
 var currentlySelectedPos;
+var locationInput;
 
-function OnMapClick(clickEvent) {
-    if (marker) {
-        map.removeLayer(marker);
+function SearchForLocation(locationToSearchFor) {
+    FetchLocation(locationToSearchFor).then((resultLocations) => {
+        if (resultmarkers.length > 0) {
+            resultmarkers.forEach(marker => {
+                map.removeLayer(marker);
+            })
+        }
+
+        let results = resultLocations.results;
+
+        results.forEach(result => {
+            resultmarkers.push(L.marker([result.latitude, result.longitude]).addTo(map).bindPopup(`${result.name}<br>(${result.latitude}, ${result.longitude})`).on("click", OnMapClick));
+        });
+    });
+}
+
+async function FetchLocation(locationToSearchFor) {
+    const API_URL = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(locationToSearchFor)}&count=10&language=en&format=json`;
+
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        return data;
+    }
+    catch (err) {
+        console.error("Error fetching location data: ", err);
     }
 
-    marker = L.marker(clickEvent.latlng).addTo(map);
-    map.setView(clickEvent.latlng, 10);
+    return null;
+}
+
+function OnMapClick(clickEvent) {
+    if (clickEvent.originalEvent.srcElement.id != "map") {
+        map.setView(clickEvent.latlng, 9);
+    }
+
+    if (userMarker) {
+        map.removeLayer(userMarker);
+    }
+
+    userMarker = L.marker(clickEvent.latlng).addTo(map);
+    map.setView(clickEvent.latlng);
     currentlySelectedPos = clickEvent.latlng;
 }
 
@@ -19,7 +57,12 @@ function SelectLocation() {
     }
 };
 
+function GetLocationInput() {
+    return locationInput.value;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+    locationInput = document.getElementById("locationInput");
     currentlySelectedPos = JSON.parse(localStorage.getItem("clientLocation"));
 
     map = L.map("map").setView(currentlySelectedPos ? currentlySelectedPos : [46.253, 20.151], 3);
@@ -31,4 +74,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     map.on("click", OnMapClick);
+
+    locationInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            SearchForLocation(GetLocationInput());
+        }
+    });
 });
