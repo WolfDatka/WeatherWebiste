@@ -1,9 +1,9 @@
 :root {
-    --bg-main: #D8D4D5;
-    --bg-secondary: #E2E2E2;
+    --bg-main: #c9c7c7;
+    --bg-secondary: #ded8d8;
 
     --accent: #042056;
-    --accent-weak: #38444d;
+    --accent-weak: #233557;
 }
 
 body {
@@ -11,4 +11,5 @@ body {
     padding: 0;
 
     background-color: var(--bg-main);
+    font-family:  Arial;
 }

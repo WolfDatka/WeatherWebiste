@@ -51,9 +51,19 @@ function OnMapClick(clickEvent) {
 }
 
 function SelectLocation() {
-    if (currentlySelectedPos) {
-        localStorage.setItem("clientLocation", JSON.stringify(currentlySelectedPos));
-        window.location.pathname = "/html/en/index.html"
+    let lastLocation = localStorage.getItem("clientLocation");
+    if (!lastLocation) {
+        if (currentlySelectedPos) {
+            localStorage.setItem("clientLocation", JSON.stringify(currentlySelectedPos));
+            window.location.pathname = "/html/en/index.html";
+        }
+    }
+    else if(currentlySelectedPos == lastLocation) {
+        window.location.pathname = "/html/en/index.html";
+    }
+    else {
+        localStorage.removeItem("clientLocation");
+        window.location.pathname = "/html/en/index.html";
     }
 };
 

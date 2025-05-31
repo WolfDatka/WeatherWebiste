@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="111600">
     <script src="/js/redirectToGetLocation.js"></script>
+
     <title>ClimaWolf</title>
     <link rel="shortcut icon" href="/assets/logos/climaWolfLogo-quarterSize-reducedPaletteTo50-slightLoss50.webp">
 
@@ -24,8 +26,33 @@
     </header>
 
     <main>
-        <section>
-            
+        <section id="currentWeatherSection" style="background-color: var(--bg-main);">
+            <h2>Current weather</h2>
+
+            <div id="currentWeatherWidgetline">
+                <div id="currentTemperature" style="background-color: var(--bg-secondary);">
+                    <h5>Temperature</h5>
+                    <img src="/assets/icons/thermometers/thermometer-normal.svg" alt="cloudIcon">
+                    <p>Error</p>
+                </div>
+                <div id="currentPrecipitation" style="background-color: var(--bg-secondary);">
+                    <h5>Precipitation</h5>
+                    <img src="/assets/icons/umbrellas/umbrella-closed.svg" alt="cloudIcon">
+                    <p>Error</p>
+                </div>
+                <div id="currentCloud" style="background-color: var(--bg-secondary);">
+                    <h5>Cloud covrage</h5>
+                    <img src="/assets/icons/cloudCovrage/sun.svg" alt="cloudIcon">
+                    <p>Error</p>
+                </div>
+                <div id="currentWind" style="background-color: var(--bg-secondary);">
+                    <h5>Wind</h5>
+                    <div id="windIcon">
+                        <img src="/assets/icons/arrow.svg">
+                    </div>
+                    <p>Error</p>
+                </div>
+            </div>
         </section>
     </main>
 
