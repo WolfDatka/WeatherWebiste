@@ -1,0 +1,15 @@
+body {
+    /* Rainy + cloudy */
+    background-color: #384D48;
+    background-color: #6E7271;
+    background-color: #ACAD94;
+    background-color: #D8D4D5;
+    background-color: #E2E2E2;
+
+    /* Sunny + normal */
+    background-color: #FFD23F;
+    background-color: #6E7271;
+    background-color: #ACAD94;
+    background-color: #D8D4D5;
+    background-color: #E2E2E2;
+}

@@ -4,18 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/js/redirectToGetLocation.js"></script>
-    <title>Weather Forecast</title>
+    <title>ClimaWolf</title>
+    <link rel="shortcut icon" href="/assets/logos/climaWolfLogo-quarterSize-reducedPaletteTo50-slightLoss50.webp">
 
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-    <header></header>
+    <header>
+        <div id="pageBranding">
+            <img src="/assets/logos/climaWolfLogo-thirdSize-reducedPaletteTo50-slightLoss50.webp" alt="ClimaWolf logo">
+            <h1>ClimaWolf</h1>
+        </div>
+
+        <button type="button" id="changeLocation" onclick="window.location.pathname = '/html/en/locationSelector.html'">
+            <p>Change location</p>
+            <img src="/assets/icons/changeLocation-spinSign_locationIconInMiddle.svg" alt="changeLocationIcon">
+        </button>
+    </header>
 
     <main>
-        <div id="weatherDisplay">
+        <section>
             
-        </div>
+        </section>
     </main>
 
     <footer></footer>

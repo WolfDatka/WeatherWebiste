@@ -1,9 +1,14 @@
+:root {
+    --bg-main: #D8D4D5;
+    --bg-secondary: #E2E2E2;
+
+    --accent: #042056;
+    --accent-weak: #38444d;
+}
+
 body {
     margin: 0;
     padding: 0;
-}
 
-main {
-    width: 100vw;
-    height: 100vh;
+    background-color: var(--bg-main);
 }

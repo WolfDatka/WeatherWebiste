@@ -2,7 +2,7 @@ var clientLocation;
 var weather;
 
 async function FetchWeather(lat, lng) {
-    const API_URL = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lng)}&timezone=Europe%2FBerlin&forecast_days=16&hourly=temperature_2m%2Crain%2Csnowfall%2Csnow_depth%2Cshowers%2Cuv_index%2Cuv_index_clear_sky&forecast_hours=24&current=temperature_2m%2Cshowers%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_direction_10m&daily=temperature_2m_max%2Ctemperature_2m_min%2Cuv_index_max%2Cuv_index_clear_sky_max`;
+    const API_URL = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lng)}&daily=temperature_2m_max,temperature_2m_min,uv_index_max,weather_code&hourly=temperature_2m,rain,snowfall,snow_depth,showers,uv_index,cloud_cover&current=temperature_2m,showers,rain,snowfall,wind_speed_10m,wind_direction_10m,cloud_cover&timezone=auto&forecast_days=16&forecast_hours=24`;
 
     try {
         const response = await fetch(API_URL);
@@ -20,7 +20,23 @@ async function FetchWeather(lat, lng) {
 document.addEventListener("DOMContentLoaded", () => {
     clientLocation = JSON.parse(localStorage.getItem("clientLocation"));
 
-    FetchWeather(clientLocation.lat, clientLocation.lng).then((result) => {
-        weather = result
-    });
+    weather = JSON.parse(localStorage.getItem("weatherData"));
+    if (!weather) {
+        FetchWeather(clientLocation.lat, clientLocation.lng).then((result) => {
+            localStorage.setItem("weatherData", JSON.stringify(result));
+        });
+    }
+    else {
+        const currentTime = new Date();
+        let lastRequestedTimeInMins = (parseInt(weather.current.time.split('T')[1].split(':')[0], 10) * 60) + parseInt(weather.current.time.split('T')[1].split(':')[1], 10);
+        let timeInMins = (currentTime.getHours() * 60) + currentTime.getMinutes();
+
+        if (timeInMins - lastRequestedTimeInMins > 30) {
+            FetchWeather(clientLocation.lat, clientLocation.lng).then((result) => {
+                localStorage.setItem("weatherData", JSON.stringify(result));
+            });
+        }
+    }
+
+    console.log(weather);
 });
