@@ -18,7 +18,7 @@ async function FetchWeather(lat, lng) {
 }
 
 async function RotateWindDir(direction) {
-    document.getElementById("windIcon").children[0].style = `rotate: ${-1 * (direction - 90)}deg`;
+    document.getElementById("arrow").style = `rotate: ${(direction - 180)}deg`;
 }
 
 async function FillUIWithData(weather) {
@@ -29,7 +29,6 @@ async function FillUIWithData(weather) {
     currentTempElement.children[2].innerHTML = `${weather.current.temperature_2m}${weather.current_units.temperature_2m}`;
     if (weather.current.temperature_2m < 10) {
         currentTempElement.children[1].src = "/assets/icons/thermometers/thermometer-cold.svg";
-        console.log(currentTempElement.children[1]);
     }
     else if (weather.current.temperature_2m > 25) {
         currentTempElement.children[1].src = "/assets/icons/thermometers/thermometer-hot.svg";
@@ -56,17 +55,25 @@ async function FillUIWithData(weather) {
 
     const currentCloudElement = document.getElementById("currentCloud");
     currentCloudElement.children[2].innerHTML = weather.current.cloud_cover == 0 ? "Almost no cloud cover" : `${weather.current.cloud_cover}${weather.current_units.cloud_cover}`;
-    if (weather.current.cloud_cover > 20) {
-        currentCloudElement.children[1].src = "/assets/icons/cloudCovrage/cloudy.svg";
+    if (weather.current.cloud_cover > 60) {
+        currentCloudElement.children[1].src = "/assets/icons/cloudCoverage/veryCloudy.svg";
     }
-    else if (weather.current.cloud_cover > 60) {
-        currentCloudElement.children[1].src = "/assets/icons/cloudCovrage/veryCloudy.svg";
+    else if (weather.current.cloud_cover > 20) {
+        currentCloudElement.children[1].src = "/assets/icons/cloudCoverage/cloudy.svg";
     }
 
 
     const currentWindElement = document.getElementById("currentWind");
     currentWindElement.children[2].innerHTML = weather.current.wind_speed_10m == 0 ? "Almost no wind" : `${weather.current.wind_speed_10m}${weather.current_units.wind_speed_10m}<br>${weather.current.wind_direction_10m}${weather.current_units.wind_direction_10m}`;
     RotateWindDir(weather.current.wind_direction_10m);
+}
+
+function FetchDataAndRefillUI() {
+    FetchWeather(clientLocation.lat, clientLocation.lng).then((result) => {
+        weather = result;
+        localStorage.setItem("weatherData", JSON.stringify(weather));
+        FillUIWithData(weather);
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -95,4 +102,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         FillUIWithData(weather);
     }
+
+    setInterval(FetchDataAndRefillUI, (31 * 60) * 1000);
 });

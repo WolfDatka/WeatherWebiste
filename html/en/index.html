@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="111600">
     <script src="/js/redirectToGetLocation.js"></script>
 
     <title>ClimaWolf</title>
@@ -20,7 +19,6 @@
         </div>
 
         <button type="button" id="changeLocation" onclick="window.location.pathname = '/html/en/locationSelector.html'">
-            <p>Change location</p>
             <img src="/assets/icons/changeLocation-spinSign_locationIconInMiddle.svg" alt="changeLocationIcon">
         </button>
     </header>
@@ -41,15 +39,13 @@
                     <p>Error</p>
                 </div>
                 <div id="currentCloud" style="background-color: var(--bg-secondary);">
-                    <h5>Cloud covrage</h5>
-                    <img src="/assets/icons/cloudCovrage/sun.svg" alt="cloudIcon">
+                    <h5>Cloud coverage</h5>
+                    <img src="/assets/icons/cloudCoverage/sun.svg" alt="cloudIcon">
                     <p>Error</p>
                 </div>
                 <div id="currentWind" style="background-color: var(--bg-secondary);">
                     <h5>Wind</h5>
-                    <div id="windIcon">
-                        <img src="/assets/icons/arrow.svg">
-                    </div>
+                    <img id="arrow" src="/assets/icons/arrow.svg">
                     <p>Error</p>
                 </div>
             </div>
