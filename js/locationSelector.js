@@ -52,19 +52,15 @@ function OnMapClick(clickEvent) {
 
 function SelectLocation() {
     let lastLocation = localStorage.getItem("clientLocation");
-    if (!lastLocation) {
-        if (currentlySelectedPos) {
-            localStorage.setItem("clientLocation", JSON.stringify(currentlySelectedPos));
-            window.location.pathname = "/html/en/index.html";
+
+    if (lastLocation) {
+        if (localStorage.getItem("weatherData")) {
+            localStorage.removeItem("weatherData");
         }
     }
-    else if(currentlySelectedPos == lastLocation) {
-        window.location.pathname = "/html/en/index.html";
-    }
-    else {
-        localStorage.removeItem("clientLocation");
-        window.location.pathname = "/html/en/index.html";
-    }
+
+    localStorage.setItem("clientLocation", JSON.stringify(currentlySelectedPos));
+    window.location.pathname = "/html/en/index.html";
 };
 
 function GetLocationInput() {
@@ -86,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on("click", OnMapClick);
 
     locationInput.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
+        if (event.key == "Enter") {
             SearchForLocation(GetLocationInput());
         }
     });
