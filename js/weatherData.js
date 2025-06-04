@@ -72,7 +72,7 @@ async function RotateWindDir(direction) {
     document.getElementById("arrow").style = `rotate: ${(direction - 180)}deg`;
 }
 
-async function FillUIWithData_current(weather) {
+async function FillUIWithData_current() {
     console.log(weather);
 
 
@@ -119,7 +119,7 @@ async function FillUIWithData_current(weather) {
     RotateWindDir(weather.current.wind_direction_10m);
 }
 
-async function FillUIWithData_daily(weather) {
+async function FillUIWithData_daily() {
     const dailyReportChart = document.getElementById("dailyReportChart");
 
     const vw = window.innerWidth / 100;
@@ -214,15 +214,16 @@ async function FillUIWithData_daily(weather) {
     });
 }
 
-async function FillUIWithData(weather) {
-    FillUIWithData_current(weather);
-    FillUIWithData_daily(weather);
+async function FillUIWithData() {
+    FillUIWithData_current();
+    FillUIWithData_daily();
 }
 
 function FetchDataAndFillUI() {
     FetchWeather(clientLocation.lat, clientLocation.lng).then((result) => {
         weather = result;
         localStorage.setItem("weatherData", JSON.stringify(weather));
+        console.log("1");
         FillUIWithData(weather);
     });
 }
@@ -232,17 +233,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     weather = JSON.parse(localStorage.getItem("weatherData"));
     if (!weather) {
-        FetchWeather(clientLocation.lat, clientLocation.lng).then((result) => {
-            weather = result;
-            localStorage.setItem("weatherData", JSON.stringify(weather));
-            FillUIWithData(weather);
-        });
+        FetchDataAndFillUI();
     }
     else {
         const currentTime = new Date();
         let lastRequestedTimeInMins = (parseInt(weather.current.time.split('T')[1].split(':')[0], 10) * 60) + parseInt(weather.current.time.split('T')[1].split(':')[1], 10);
         let timeInMins = (currentTime.getHours() * 60) + currentTime.getMinutes();
-
+        
         if (timeInMins - lastRequestedTimeInMins > 30) { FetchDataAndFillUI(); }
     }
 
@@ -253,10 +250,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (timeInMins - lastRequestedTimeInMins > 30) {
             FetchDataAndFillUI();
         }
-
+        
     }, (2 * 60) * 1000);
 
     window.addEventListener("resize", () => {
-        FillUIWithData_daily(weather);
+        FillUIWithData_daily();
     });
+
+    FillUIWithData();
 });
