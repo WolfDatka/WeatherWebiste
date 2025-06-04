@@ -8,7 +8,7 @@ const chartLegendProperties = {
         }
     },
     "temperature_2m_min": {
-        "color": "#910000",
+        "color": "#990000",
         "display": {
             "en": "Temperature min"
         }
@@ -121,34 +121,48 @@ async function FillUIWithData_current(weather) {
 
 async function FillUIWithData_daily(weather) {
     const dailyReportChart = document.getElementById("dailyReportChart");
-    const ctx = dailyReportChart.getContext("2d");
 
-    const dailyReportChartContainer = document.createElement("div");
-    dailyReportChartContainer.className = "chart";
-    dailyReportChart.parentNode.replaceChild(dailyReportChartContainer, dailyReportChart);
-    dailyReportChartContainer.appendChild(dailyReportChart);
+    const vw = window.innerWidth / 100;
+    if (100*vw <= 1228) {
+        dailyReportChart.setAttribute("width", 90*vw);
+        dailyReportChart.setAttribute("height", 35*vw);
+    }
+    else {
+        dailyReportChart.setAttribute("width", 68.3*vw);
+        dailyReportChart.setAttribute("height", 35*vw);
+    }
 
-    const chartLegend = document.createElement("div");
-    chartLegend.className = "chartLegend";
-    dailyReportChartContainer.appendChild(chartLegend);
+    const chartLegend = dailyReportChart.nextElementSibling;
 
-    Object.entries(weather.daily).forEach(([key, val]) => {
-        if (key != "time") {
-            const colorLegendElement = document.createElement("div");
-            chartLegend.appendChild(colorLegendElement);
+    if (!chartLegend.hasChildNodes()) {
+        Object.entries(weather.daily).forEach(([key, val]) => {
+            if (key != "time") {
+                const colorLegendElement = document.createElement("div");
+                chartLegend.appendChild(colorLegendElement);
+    
+                const colorLegendColorElement = document.createElement("span");
+                colorLegendColorElement.style.setProperty("background-color", chartLegendProperties[key].color);
+                colorLegendColorElement.style.setProperty("color", chartLegendProperties[key].color);
+                colorLegendColorElement.append("‎");
+                colorLegendElement.appendChild(colorLegendColorElement);
 
-            const colorLegendColorElement = document.createElement("span");
-            colorLegendColorElement.style.setProperty("background-color", chartLegendProperties[key].color);
-            colorLegendColorElement.style.setProperty("color", chartLegendProperties[key].color);
-            colorLegendColorElement.append("‎");
-            colorLegendElement.appendChild(colorLegendColorElement);
+                /*
+                const colorLegendSelectorInput = document.createElement("input");
+                colorLegendSelectorInput.type = "radio"
+                colorLegendSelectorInput.id = key;
+                colorLegendSelectorInput.style.setProperty("position", "relative");
+                colorLegendSelectorInput.style.setProperty("bottom", "0.84vh");
+                colorLegendElement.appendChild(colorLegendSelectorInput);
+                */
 
-            const colorLegendNamedisplayElement = document.createElement("p");
-            colorLegendNamedisplayElement.innerHTML = chartLegendProperties[key].display.en;
-            colorLegendElement.appendChild(colorLegendNamedisplayElement);
-        }
-    });
+                const colorLegendNamedisplayElement = document.createElement("p");
+                colorLegendNamedisplayElement.innerHTML = chartLegendProperties[key].display.en;
+                colorLegendElement.appendChild(colorLegendNamedisplayElement);
+            }
+        });
+    }
 
+    /*
     let max = 0;
     Object.entries(weather.daily).forEach(([key, vals]) => {
         if (key != "time" && key != "precipitation_hours") {
@@ -156,28 +170,41 @@ async function FillUIWithData_daily(weather) {
             if (localMax > max) { max = localMax; }
         }
     });
+    */
+
+    const ctx = dailyReportChart.getContext("2d");
+    ctx.clearRect(0, 0, dailyReportChart.width, dailyReportChart.height);
+
+    const START_OFFSET = 1*vw;
+    const STEP_SIZE = ((((100*vw <= 1228) ? 90 : 68.3) * vw) / 15.196581196581196581196581196581) - ((START_OFFSET) / weather.daily.time.length);
+    const SCALER = 0.35*vw;
+    const Y_OFFSET = 1.5 * (14.173228346456692913385826771654*vw);
+    const LINE_WIDTH = SCALER - 1.5;
+    const MIN_LINE_WIDTH = 3;
 
     Object.entries(weather.daily).forEach(([key, vals]) => {
         let i = 0;
         if (key != "time" && key != "precipitation_hours") {
             ctx.beginPath();
-            ctx.moveTo(5, vals[0] + 40);
+            ctx.moveTo(START_OFFSET, -1*SCALER*vals[0] + Y_OFFSET);
             vals.forEach(val => {
-                ctx.lineTo(5 + (i * 19.25), val + 40);
+                val = -1*SCALER*val;
+                ctx.lineTo(START_OFFSET + (i * STEP_SIZE), val + Y_OFFSET);
                 i += 1;
             });
 
             ctx.strokeStyle = chartLegendProperties[key].color;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = (LINE_WIDTH > MIN_LINE_WIDTH ? LINE_WIDTH : MIN_LINE_WIDTH);
             ctx.stroke();
             ctx.closePath();
 
             i = 0
             vals.forEach(val => {
-                ctx.lineTo(5 + (i * 19.25), val + 40);
+                val = -1*SCALER*val;
+                ctx.lineTo(START_OFFSET + (i * STEP_SIZE), -1*SCALER*val + Y_OFFSET);
 
                 ctx.beginPath();
-                ctx.arc(5 + (i * 19.25), val + 40, 1, 0, Math.PI * 2);
+                ctx.arc(START_OFFSET + (i * STEP_SIZE), val + Y_OFFSET, (LINE_WIDTH > MIN_LINE_WIDTH ? LINE_WIDTH : MIN_LINE_WIDTH), 0, 2*Math.PI);
                 ctx.fillStyle = chartLegendProperties[key].color;
                 ctx.fill();
                 ctx.closePath();
@@ -228,4 +255,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setInterval(FetchDataAndRefillUI, (31 * 60) * 1000);
+
+    window.addEventListener("resize", () => {
+        FillUIWithData_daily(weather);
+    });
 });

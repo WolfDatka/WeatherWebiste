@@ -106,7 +106,7 @@ h2 {
     margin: auto;
 }
 #currentWeatherWidgetline div p {
-    font-size: 1.2em;
+    height: clamp(1rem, 0.6098rem + 1.9512vw, 2rem);
     text-align: center;
 }
 
@@ -126,7 +126,9 @@ canvas {
     border-radius: 0.5rem;
     background: var(--bg-main);
 
-    width: 70vw;
+    width: 68.3vw;
+    max-width: 71vw;
+    max-height: 36vw;
 }
 .chart {
     display: flex;
@@ -157,6 +159,9 @@ canvas {
 @media (max-width: 1228px) {
     canvas {
         width: 90vw;
+        max-width: none;
+        margin: 0px;
+        margin-bottom: 2vh;
     }
     .chartLegend {
         display: flex;
@@ -164,8 +169,13 @@ canvas {
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 1.1vw;
+        width: 90vw;
     }
     .chartLegend p {
-        width: 40vw;
+        width: 35vw;
     }
+}
+
+#currentCloud {
+    display: none !important;
 }
