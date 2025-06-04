@@ -219,7 +219,7 @@ async function FillUIWithData(weather) {
     FillUIWithData_daily(weather);
 }
 
-function FetchDataAndRefillUI() {
+function FetchDataAndFillUI() {
     FetchWeather(clientLocation.lat, clientLocation.lng).then((result) => {
         weather = result;
         localStorage.setItem("weatherData", JSON.stringify(weather));
@@ -243,18 +243,18 @@ document.addEventListener("DOMContentLoaded", () => {
         let lastRequestedTimeInMins = (parseInt(weather.current.time.split('T')[1].split(':')[0], 10) * 60) + parseInt(weather.current.time.split('T')[1].split(':')[1], 10);
         let timeInMins = (currentTime.getHours() * 60) + currentTime.getMinutes();
 
-        if (timeInMins - lastRequestedTimeInMins > 30) {
-            FetchWeather(clientLocation.lat, clientLocation.lng).then((result) => {
-                weather = result;
-                localStorage.setItem("weatherData", JSON.stringify(weather));
-                FillUIWithData(weather);
-            });
-        }
-
-        FillUIWithData(weather);
+        if (timeInMins - lastRequestedTimeInMins > 30) { FetchDataAndFillUI(); }
     }
 
-    setInterval(FetchDataAndRefillUI, (31 * 60) * 1000);
+    setInterval(() => {
+        const currentTime = new Date();
+        let lastRequestedTimeInMins = (parseInt(weather.current.time.split('T')[1].split(':')[0], 10) * 60) + parseInt(weather.current.time.split('T')[1].split(':')[1], 10);
+        let timeInMins = (currentTime.getHours() * 60) + currentTime.getMinutes();
+        if (timeInMins - lastRequestedTimeInMins > 30) {
+            FetchDataAndFillUI();
+        }
+
+    }, (2 * 60) * 1000);
 
     window.addEventListener("resize", () => {
         FillUIWithData_daily(weather);
