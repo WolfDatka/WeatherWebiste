@@ -239,8 +239,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const currentTime = new Date();
         let lastRequestedTimeInMins = (parseInt(weather.current.time.split('T')[1].split(':')[0], 10) * 60) + parseInt(weather.current.time.split('T')[1].split(':')[1], 10);
         let timeInMins = (currentTime.getHours() * 60) + currentTime.getMinutes();
-        
-        if (timeInMins - lastRequestedTimeInMins > 30) { FetchDataAndFillUI(); }
+        let todayDate = `${currentTime.getFullYear()}-${(currentTime.getMonth() + 1).toString().padStart(2, '0')}-${currentTime.getDate().toString().padStart(2, '0')}`;
+
+        if (timeInMins - lastRequestedTimeInMins > 30 || weather.current.time.split('T')[0] != todayDate) { FetchDataAndFillUI(); }
     }
 
     setInterval(() => {
