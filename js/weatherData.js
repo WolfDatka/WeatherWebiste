@@ -1,4 +1,5 @@
 var clientLocation;
+var vw;
 var weather;
 const chartLegendProperties = {
     "temperature_2m_max": {
@@ -73,11 +74,8 @@ async function RotateWindDir(direction) {
 }
 
 async function FillUIWithData_current() {
-    console.log(weather);
-
-
     const currentTempElement = document.getElementById("currentTemperature");
-    currentTempElement.children[2].innerHTML = `${weather.current.temperature_2m}${weather.current_units.temperature_2m}`;
+    currentTempElement.children[2].textContent = `${weather.current.temperature_2m}${weather.current_units.temperature_2m}`;
     if (weather.current.temperature_2m < 10) {
         currentTempElement.children[1].src = "/assets/icons/thermometers/thermometer-cold.svg";
     }
@@ -88,31 +86,20 @@ async function FillUIWithData_current() {
 
     const currentPrecipitationElement = document.getElementById("currentPrecipitation");
     if (weather.current.rain > 0) {
-        currentPrecipitationElement.children[2].innerHTML = `${weather.current.rain}${weather.current_units.rain}`;
         currentPrecipitationElement.children[1].src = "/assets/icons/umbrellas/umbrella-raining.svg";
+        currentPrecipitationElement.children[2].textContent = `${weather.current.rain}${weather.current_units.rain}`;
     }
     else if (weather.current.showers > 0) {
-        currentPrecipitationElement.children[2].innerHTML = `${weather.current.showers}${weather.current_units.showers}`;
         currentPrecipitationElement.children[1].src = "/assets/icons/umbrellas/umbrella-raining.svg";
+        currentPrecipitationElement.children[2].textContent = `${weather.current.showers}${weather.current_units.showers}`;
     }
     else if (weather.current.showfall > 0) {
-        currentPrecipitationElement.children[2].innerHTML = `${weather.current.snowfall}${weather.current_units.snowfall}`;
         currentPrecipitationElement.children[1].src = "/assets/icons/umbrellas/umbrella-snowing.svg";
+        currentPrecipitationElement.children[2].textContent = `${weather.current.snowfall}${weather.current_units.snowfall}`;
     }
     else {
-        currentPrecipitationElement.children[2].innerHTML = "There's no precipitation";
+        currentPrecipitationElement.children[2].textContent = "No precipitation";
     }
-
-
-    const currentCloudElement = document.getElementById("currentCloud");
-    currentCloudElement.children[2].innerHTML = weather.current.cloud_cover == 0 ? "Almost no cloud cover" : `${weather.current.cloud_cover}${weather.current_units.cloud_cover}`;
-    if (weather.current.cloud_cover > 60) {
-        currentCloudElement.children[1].src = "/assets/icons/cloudCoverage/veryCloudy.svg";
-    }
-    else if (weather.current.cloud_cover > 20) {
-        currentCloudElement.children[1].src = "/assets/icons/cloudCoverage/cloudy.svg";
-    }
-
 
     const currentWindElement = document.getElementById("currentWind");
     currentWindElement.children[2].innerHTML = weather.current.wind_speed_10m == 0 ? "Almost no wind" : `${weather.current.wind_speed_10m}${weather.current_units.wind_speed_10m}<br>${weather.current.wind_direction_10m}${weather.current_units.wind_direction_10m}`;
@@ -120,101 +107,106 @@ async function FillUIWithData_current() {
 }
 
 async function FillUIWithData_daily() {
-    const dailyReportChart = document.getElementById("dailyReportChart");
-
-    const vw = window.innerWidth / 100;
-    if (100*vw <= 1228) {
-        dailyReportChart.setAttribute("width", 90*vw);
-        dailyReportChart.setAttribute("height", 35*vw);
-    }
-    else {
-        dailyReportChart.setAttribute("width", 68.3*vw);
-        dailyReportChart.setAttribute("height", 35*vw);
+    const cardsContainer = document.getElementsByClassName("dailyWeatherCard")[0].parentNode;
+    for (let i = 0; i < weather.daily.time.length - 1; i++) {
+        cardsContainer.appendChild(cardsContainer.firstElementChild.cloneNode(true));
     }
 
-    const chartLegend = dailyReportChart.nextElementSibling;
+    const cards = document.getElementsByClassName("dailyWeatherCard");
+    for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
 
-    if (!chartLegend.hasChildNodes()) {
-        Object.entries(weather.daily).forEach(([key, val]) => {
-            if (key != "time") {
-                const colorLegendElement = document.createElement("div");
-                chartLegend.appendChild(colorLegendElement);
-    
-                const colorLegendColorElement = document.createElement("span");
-                colorLegendColorElement.style.setProperty("background-color", chartLegendProperties[key].color);
-                colorLegendColorElement.style.setProperty("color", chartLegendProperties[key].color);
-                colorLegendColorElement.append("‎");
-                colorLegendElement.appendChild(colorLegendColorElement);
+        /* Set date */ {
+            const cardDate = new Date(weather.daily.time[i]);
 
-                /*
-                const colorLegendSelectorInput = document.createElement("input");
-                colorLegendSelectorInput.type = "radio"
-                colorLegendSelectorInput.id = key;
-                colorLegendSelectorInput.style.setProperty("position", "relative");
-                colorLegendSelectorInput.style.setProperty("bottom", "0.84vh");
-                colorLegendElement.appendChild(colorLegendSelectorInput);
-                */
+            const fullDate = card.getElementsByClassName("fullDate");
+            fullDate[0].textContent = cardDate.toLocaleDateString("en", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
 
-                const colorLegendNamedisplayElement = document.createElement("p");
-                colorLegendNamedisplayElement.innerHTML = chartLegendProperties[key].display.en;
-                colorLegendElement.appendChild(colorLegendNamedisplayElement);
+            const maxTemp = card.getElementsByClassName("maxTemp");
+            maxTemp[0].textContent = `${weather.daily.temperature_2m_max[i]}${weather.daily_units.temperature_2m_max}`;
+            const maxTempTypeNode = document.createElement("sub");
+            maxTempTypeNode.textContent = "max";
+            maxTemp[0].appendChild(maxTempTypeNode);
+
+            const minTemp = card.getElementsByClassName("minTemp");
+            minTemp[0].textContent = `${weather.daily.temperature_2m_min[i]}${weather.daily_units.temperature_2m_min}`;
+            const minTempTypeNode = document.createElement("sub");
+            minTempTypeNode.textContent = "min";
+            minTemp[0].appendChild(minTempTypeNode);
+        }
+
+        /* Set precipitation probability */ {
+            card.getElementsByClassName("precipitation")[0].getElementsByTagName("span")[0].textContent = `${weather.daily.precipitation_probability_max[0]}%`;
+        }
+
+        /* Set UV index */ {
+            card.getElementsByClassName("uvIndex")[0].getElementsByTagName("span")[0].textContent = `${weather.daily.uv_index_max[i]} UV`;
+        }
+
+        /* Set precipitation sum (rain, shower, snow) */ {
+            const precipSumSpan = card.getElementsByClassName("precipSum")[0].getElementsByTagName("span")[0];
+            if (weather.daily.rain_sum[i] > 0) {
+                precipSumSpan.textContent = `${weather.daily.rain_sum[i]}${weather.daily_units.rain_sum}`;
             }
-        });
+            else if (weather.daily.showers_sum[i] > 0) {
+                precipSumSpan.textContent = `${weather.daily.showers_sum[i]}${weather.daily_units.showers_sum}`;
+            }
+            else if (weather.daily.snowfall_sum[i] > 0) {
+                precipSumSpan.textContent = `${weather.daily.snowfall_sum[i]}${weather.daily_units.snowfall_sum}`;
+            }
+            else {
+                precipSumSpan.textContent = "0 mm";
+            }
+        }
     }
+
+    cards[0].firstElementChild.firstElementChild.textContent = "Today";
+    cards[0].firstElementChild.firstElementChild.style.setProperty("font-weight", "900");
+    cards[1].firstElementChild.firstElementChild.textContent = "Tomorrow";
+    cards[1].firstElementChild.firstElementChild.style.setProperty("font-weight", "900");
 
     /*
-    let max = 0;
-    Object.entries(weather.daily).forEach(([key, vals]) => {
-        if (key != "time" && key != "precipitation_hours") {
-            let localMax = Math.max(...vals.flat());
-            if (localMax > max) { max = localMax; }
-        }
-    });
+    const todayElement = cards[0];
+    const todayDateElement = document.createElement("p");
+    todayDateElement.innerText = todayElement.firstElementChild.firstElementChild.textContent;
+    todayElement.firstElementChild.firstElementChild.remove();
+    const todayTextElement = document.createElement("h5");
+    todayTextElement.innerText = "Today";
+    todayTextElement.style.setProperty("font-size","clamp(1.7rem, 0.61vw + 1.505rem, 2.2rem)");
+    todayElement.firstElementChild.appendChild(todayTextElement);
+    todayElement.firstElementChild.appendChild(todayDateElement);
+
+    const tomorrowElement = cards[1];
+    const tomorrowDateElement = document.createElement("p");
+    tomorrowDateElement.innerText = tomorrowElement.firstElementChild.firstElementChild.textContent;
+    tomorrowElement.firstElementChild.firstElementChild.remove();
+    const tomorrowTextElement = document.createElement("h5");
+    tomorrowTextElement.innerText = "Tomorrow";
+    tomorrowTextElement.style.setProperty("font-size","clamp(1.7rem, 0.61vw + 1.505rem, 2.2rem)");
+    tomorrowElement.firstElementChild.appendChild(tomorrowTextElement);
+    tomorrowElement.firstElementChild.appendChild(tomorrowDateElement);
     */
+}
 
-    const ctx = dailyReportChart.getContext("2d");
-    ctx.clearRect(0, 0, dailyReportChart.width, dailyReportChart.height);
-
-    const START_OFFSET = 1*vw;
-    const STEP_SIZE = ((((100*vw <= 1228) ? 90 : 68.3) * vw) / 15.196581196581196581196581196581) - ((START_OFFSET) / weather.daily.time.length);
-    const SCALER = 0.35*vw;
-    const Y_OFFSET = 1.5 * (14.173228346456692913385826771654*vw);
-    const LINE_WIDTH = SCALER - 1.5;
-    const MIN_LINE_WIDTH = 3;
-
-    Object.entries(weather.daily).forEach(([key, vals]) => {
-        let i = 0;
-        if (key != "time" && key != "precipitation_hours") {
-            ctx.beginPath();
-            ctx.moveTo(START_OFFSET, -1*SCALER*vals[0] + Y_OFFSET);
-            vals.forEach(val => {
-                val = -1*SCALER*val;
-                ctx.lineTo(START_OFFSET + (i * STEP_SIZE), val + Y_OFFSET);
-                i += 1;
-            });
-
-            ctx.strokeStyle = chartLegendProperties[key].color;
-            ctx.lineWidth = (LINE_WIDTH > MIN_LINE_WIDTH ? LINE_WIDTH : MIN_LINE_WIDTH);
-            ctx.stroke();
-            ctx.closePath();
-
-            i = 0
-            vals.forEach(val => {
-                val = -1*SCALER*val;
-                ctx.lineTo(START_OFFSET + (i * STEP_SIZE), -1*SCALER*val + Y_OFFSET);
-
-                ctx.beginPath();
-                ctx.arc(START_OFFSET + (i * STEP_SIZE), val + Y_OFFSET, (LINE_WIDTH > MIN_LINE_WIDTH ? LINE_WIDTH : MIN_LINE_WIDTH), 0, 2*Math.PI);
-                ctx.fillStyle = chartLegendProperties[key].color;
-                ctx.fill();
-                ctx.closePath();
-                i += 1;
-            });
+function ChangeResponsiveIcons() {
+    const icons = Array.from(document.getElementsByClassName("responsivePrecipitationIcons"));
+    icons.forEach(element => {
+        if (weather.current.rain > 0 || weather.current.showers > 0) {
+            element.src = "/assets/icons/umbrellas/umbrella-raining.svg";
+        }
+        else if (weather.current.showfall > 0) {
+            element.src = "/assets/icons/umbrellas/umbrella-snowing.svg";
         }
     });
 }
 
 async function FillUIWithData() {
+    console.log(weather);
     FillUIWithData_current();
     FillUIWithData_daily();
 }
@@ -223,7 +215,6 @@ function FetchDataAndFillUI() {
     FetchWeather(clientLocation.lat, clientLocation.lng).then((result) => {
         weather = result;
         localStorage.setItem("weatherData", JSON.stringify(weather));
-        console.log("1");
         FillUIWithData(weather);
     });
 }
@@ -241,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let timeInMins = (currentTime.getHours() * 60) + currentTime.getMinutes();
         let todayDate = `${currentTime.getFullYear()}-${(currentTime.getMonth() + 1).toString().padStart(2, '0')}-${currentTime.getDate().toString().padStart(2, '0')}`;
 
-        if (timeInMins - lastRequestedTimeInMins > 30 || weather.current.time.split('T')[0] != todayDate) { FetchDataAndFillUI(); }
+        if (timeInMins - lastRequestedTimeInMins > 30 || weather.current.time.split("T")[0] != todayDate) { FetchDataAndFillUI(); }
     }
 
     setInterval(() => {
@@ -251,11 +242,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (timeInMins - lastRequestedTimeInMins > 30) {
             FetchDataAndFillUI();
         }
-        
-    }, (2 * 60) * 1000);
+
+    }, (3 * 60) * 1000);
 
     window.addEventListener("resize", () => {
-        FillUIWithData_daily();
+        vw = window.innerWidth / 100;
     });
 
     FillUIWithData();

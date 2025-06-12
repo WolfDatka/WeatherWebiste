@@ -1,0 +1,86 @@
+#dailyReportSection .sectionContent {
+    overflow: scroll;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    height: clamp(10rem, 6.098vw + 8.049rem, 15rem);
+}
+
+
+.dailyWeatherCard {
+    display: inline-block;
+    background-color: var(--bg-main);
+    border-radius: 15px;
+    padding: 1.5rem;
+    padding-top: .7rem;
+    height: clamp(5rem, 6.098vw + 3.049rem, 10rem);
+    min-width: fit-content;
+    width: clamp(9rem, 7.317vw + 6.659rem, 15rem);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dailyWeatherCard .date {
+    margin-bottom: 1rem;
+}
+
+.dailyWeatherCard .date h5 {
+    color: var(--accent);
+    margin: 0;
+    font-size: clamp(1rem, 0.366vw + 0.883rem, 1.3rem);
+}
+
+
+.dailyWeatherCard .weatherInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dailyWeatherCard .temp {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dailyWeatherCard .temp sub {
+    font-size: clamp(0.55rem, 0.305vw + 0.452rem, 0.8rem);
+}
+
+.dailyWeatherCard .maxTemp {
+    font-size: clamp(1.3rem, 0.732vw + 1.066rem, 1.9rem);
+    font-weight: bold;
+    color: var(--accent);
+}
+
+.dailyWeatherCard .minTemp {
+    font-size: clamp(0.9rem, 0.732vw + 0.666rem, 1.5rem);
+    color: var(--accent-weak);
+}
+
+.dailyWeatherCard .conditions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.dailyWeatherCard .conditions img {
+    width: 1.5rem;
+    height: 1.5rem;
+    vertical-align: middle;
+}
+
+.conditions span {
+    font-size: clamp(0.8rem, 0.244vw + 0.722rem, 1rem);
+}
+
+.dailyWeatherCard .conditions > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dailyWeatherCard .precipSum {
+    color: var(--accent);
+}

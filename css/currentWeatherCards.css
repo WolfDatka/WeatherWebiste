@@ -1,0 +1,45 @@
+#currentWeatherWidgetline {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+    flex-wrap: wrap;
+    gap: 3vw;
+    row-gap: clamp(2rem, 3.659vw + 0.829rem, 5rem);
+    margin: auto;
+}
+
+.currentWeatherCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    width: clamp(13rem, 2.439vw + 12.22rem, 15rem);
+    border-radius: 30px;
+    padding: 1vh 1vw;
+}
+
+.currentWeatherCard h5 {
+    font-size: clamp(1rem, 0.854vw + 0.727rem, 1.7rem);
+    text-align: center;
+    margin: 0px;
+    font-weight: 900;
+}
+
+.currentWeatherCard img {
+    height: clamp(4rem, 7.317vw + 1.659rem, 10rem);
+    margin: auto;
+}
+
+.currentWeatherCard p {
+    height: clamp(1rem, 0.6098rem + 1.9512vw, 2rem);
+    text-align: center;
+}
+
+#arrow {
+    margin: auto;
+}
+
+#currentCloud {
+    display: none !important;
+}
