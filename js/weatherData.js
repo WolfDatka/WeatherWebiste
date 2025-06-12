@@ -3,49 +3,41 @@ var vw;
 var weather;
 const chartLegendProperties = {
     "temperature_2m_max": {
-        "color": "#c90000",
         "display": {
             "en": "Temperature max"
         }
     },
     "temperature_2m_min": {
-        "color": "#990000",
         "display": {
             "en": "Temperature min"
         }
     },
     "uv_index_max": {
-        "color": "#5200a5",
         "display": {
             "en": "UV index max"
         }
     },
     "precipitation_probability_max": {
-        "color": "#001bd1",
         "display": {
             "en": "Precipitation probability max"
         }
     },
     "snowfall_sum": {
-        "color": "#ffffff",
         "display": {
             "en": "Snow sum"
         }
     },
     "rain_sum": {
-        "color": "#0095d1",
         "display": {
             "en": "Rain sum"
         }
     },
     "showers_sum": {
-        "color": "#0065d1",
         "display": {
             "en": "Showers sum"
         }
     },
     "precipitation_hours": {
-        "color": "#00d10d",
         "display": {
             "en": "Precipitation hours"
         }
@@ -169,28 +161,6 @@ async function FillUIWithData_daily() {
     cards[0].firstElementChild.firstElementChild.style.setProperty("font-weight", "900");
     cards[1].firstElementChild.firstElementChild.textContent = "Tomorrow";
     cards[1].firstElementChild.firstElementChild.style.setProperty("font-weight", "900");
-
-    /*
-    const todayElement = cards[0];
-    const todayDateElement = document.createElement("p");
-    todayDateElement.innerText = todayElement.firstElementChild.firstElementChild.textContent;
-    todayElement.firstElementChild.firstElementChild.remove();
-    const todayTextElement = document.createElement("h5");
-    todayTextElement.innerText = "Today";
-    todayTextElement.style.setProperty("font-size","clamp(1.7rem, 0.61vw + 1.505rem, 2.2rem)");
-    todayElement.firstElementChild.appendChild(todayTextElement);
-    todayElement.firstElementChild.appendChild(todayDateElement);
-
-    const tomorrowElement = cards[1];
-    const tomorrowDateElement = document.createElement("p");
-    tomorrowDateElement.innerText = tomorrowElement.firstElementChild.firstElementChild.textContent;
-    tomorrowElement.firstElementChild.firstElementChild.remove();
-    const tomorrowTextElement = document.createElement("h5");
-    tomorrowTextElement.innerText = "Tomorrow";
-    tomorrowTextElement.style.setProperty("font-size","clamp(1.7rem, 0.61vw + 1.505rem, 2.2rem)");
-    tomorrowElement.firstElementChild.appendChild(tomorrowTextElement);
-    tomorrowElement.firstElementChild.appendChild(tomorrowDateElement);
-    */
 }
 
 function ChangeResponsiveIcons() {
